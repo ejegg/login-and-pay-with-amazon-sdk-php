@@ -56,6 +56,12 @@ interface ReportsClientInterface
      * @see http://docs.developer.amazonservices.com/en_US/reports/Reports_GetReportList.html
      *
      * @param requestParameters['merchant_id'] - [String]
+     * @optional requestParameters['acknowledged'] - [Boolean]
+     * @optional requestParameters['available_from_date'] - [String] ISO8601
+     * @optional requestParameters['available_to_date'] - [String] ISO8601
+     * @optional requestParameters['max_count'] - [Integer] 1-100, default 10
+     * @optional requestParameters['report_request_id_list'] - [Array] of integers
+     * @optional requestParameters['report_type_list'] - [Array] of strings
      * @optional requestParameters['mws_auth_token'] - [String]
      */
 
