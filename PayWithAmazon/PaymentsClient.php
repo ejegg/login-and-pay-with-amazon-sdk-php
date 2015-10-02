@@ -10,6 +10,25 @@ class PaymentsClient extends BaseClient implements PaymentsClientInterface{
 
     protected $serviceVersion = '2013-01-01';
 
+    // Overriding to support ProviderCreditList and ProviderCreditReversalList
+    protected $listPrefixes = array(
+        'ProviderCreditList' => 'ProviderCreditList.member',
+        'ProviderCreditReversalList' => 'ProviderCreditReversalList.member',
+    );
+
+    protected $listMappings = array(
+        'ProviderCreditList' => array(
+            'provider_id'   => 'ProviderId',
+            'credit_amount' => 'CreditAmount.Amount',
+            'currency_code' => 'CreditAmount.CurrencyCode'
+        ),
+        'ProviderCreditReversalList' => array(
+            'provider_id'            => 'ProviderId',
+            'credit_reversal_amount'     => 'CreditReversalAmount.Amount',
+            'currency_code'         => 'CreditReversalAmount.CurrencyCode'
+        ),
+    );
+
     /* GetUserInfo convenience function - Returns user's profile information from Amazon using the access token returned by the Button widget.
      *
      * @see http://login.amazon.com/website Step 4
@@ -49,84 +68,6 @@ class PaymentsClient extends BaseClient implements PaymentsClientInterface{
 
         $userInfo = json_decode($response, true);
         return $userInfo;
-    }
-
-    /* setProviderCreditDetails - sets the provider credit details sent via the Capture or Authorize API calls
-     * @param provider_id - [String]
-     * @param credit_amount - [String]
-     * @optional currency_code - [String]
-     */
-
-    private function setProviderCreditDetails($parameters, $providerCreditInfo)
-    {
-		$providerIndex = 0;
-		$providerString = 'ProviderCreditList.member.';
-
-        $fieldMappings = array(
-            'provider_id'   => 'ProviderId',
-            'credit_amount' => 'CreditAmount.Amount',
-            'currency_code' => 'CreditAmount.CurrencyCode'
-        );
-
-		foreach ($providerCreditInfo as $key => $value)
-		{
-			$value = array_change_key_case($value, CASE_LOWER);
-			$providerIndex = $providerIndex + 1;
-
-			foreach ($value as $param => $val)
-			{
-				if (array_key_exists($param, $fieldMappings) && trim($val)!='') {
-					$parameters[$providerString.$providerIndex. '.' .$fieldMappings[$param]] = $val;
-				}
-			}
-
-			// If currency code is not entered take it from the config array
-			if(empty($parameters[$providerString.$providerIndex. '.' .$fieldMappings['currency_code']]))
-			{
-				$parameters[$providerString.$providerIndex. '.' .$fieldMappings['currency_code']] = strtoupper($this->config['currency_code']);
-			}
-		}
-
-		return $parameters;
-    }
-
-    /* setProviderCreditReversalDetails - sets the reverse provider credit details sent via the Refund API call.
-     * @param provider_id - [String]
-     * @param credit_amount - [String]
-     * @optional currency_code - [String]
-     */
-
-    private function setProviderCreditReversalDetails($parameters, $providerCreditInfo)
-    {
-		$providerIndex = 0;
-		$providerString = 'ProviderCreditReversalList.member.';
-
-        $fieldMappings = array(
-            'provider_id' 	   	=> 'ProviderId',
-            'credit_reversal_amount' 	=> 'CreditReversalAmount.Amount',
-            'currency_code' 		=> 'CreditReversalAmount.CurrencyCode'
-        );
-
-		foreach ($providerCreditInfo as $key => $value)
-		{
-			$value = array_change_key_case($value, CASE_LOWER);
-			$providerIndex = $providerIndex + 1;
-
-			foreach ($value as $param => $val)
-			{
-				if (array_key_exists($param, $fieldMappings) && trim($val)!='') {
-					$parameters[$providerString.$providerIndex. '.' .$fieldMappings[$param]] = $val;
-				}
-			}
-
-			// If currency code is not entered take it from the config array
-			if(empty($parameters[$providerString.$providerIndex. '.' .$fieldMappings['currency_code']]))
-			{
-				$parameters[$providerString.$providerIndex. '.' .$fieldMappings['currency_code']] = strtoupper($this->config['currency_code']);
-			}
-		}
-
-		return $parameters;
     }
 
     /* GetOrderReferenceDetails API call - Returns details about the Order Reference object and its current state.

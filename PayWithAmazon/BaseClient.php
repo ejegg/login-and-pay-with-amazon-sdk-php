@@ -54,6 +54,10 @@ abstract class BaseClient
     protected $profileEndpointUrls;
     protected $regionMappings;
 
+    // Override in derived types to support structured list types
+    protected $listPrefixes = array();
+    protected $listMappings = array();
+
     // Boolean variable to check if the API call was a success
     public $success = false;
 
@@ -276,13 +280,7 @@ abstract class BaseClient
             if (array_key_exists($param, $fieldMappings) && $value!='') {
 
 		if(is_array($value)) {
-		    // If the parameter is a provider_credit_details or provider_credit_reversal_details, call the respective functions to set the values
-		    if($param === 'provider_credit_details') {
-			$parameters = $this->setProviderCreditDetails($parameters,$value);
-		    } elseif ($param === 'provider_credit_reversal_details') {
-			$parameters = $this->setProviderCreditReversalDetails($parameters,$value);
-		    }
-
+			$parameters = $this->setStructucturedListParameters($parameters, $fieldMappings[$param], $value);
 		} else{
 		    // For variables that are boolean values, strtolower them
 		    if($this->checkIfBool($value))
@@ -299,6 +297,42 @@ abstract class BaseClient
 	$responseObject = $this->calculateSignatureAndPost($parameters, $parseResponse);
 
 	return $responseObject;
+    }
+
+    protected function setStructucturedListParameters($parameters, $name, $list) {
+        $listIndex = 0;
+        $listPrefix = $this->listPrefixes[$name];
+
+        if (isset($this->listMappings[$name])) {
+            $fieldMappings = $this->listMappings[$name];
+        }
+
+        foreach ($list as $key => $value)
+        {
+            $listIndex = $listIndex + 1;
+
+            if ( is_array( $value ) ) {
+                $value = array_change_key_case($value, CASE_LOWER);
+                foreach ($value as $param => $val)
+                {
+                    if (array_key_exists($param, $fieldMappings) && trim($val)!='') {
+                        $parameters["{$listPrefix}.{$listIndex}.{$fieldMappings[$param]}"] = $val;
+                    }
+                }
+                // Special case: if currency code is mapped but not provided,
+                // take it from the config array
+                if (isset($fieldMappings['currency_code'])) {
+                    $currencyKey = "{$listPrefix}.{$listIndex}.{$fieldMappings['currency_code']}";
+                    if(empty($parameters[$currencyKey])) {
+                        $parameters[$currencyKey] = strtoupper($this->config['currency_code']);
+                    }
+                }
+            } else {
+                $parameters["{$listPrefix}.{$listIndex}"] = $value;
+            }
+        }
+
+        return $parameters;
     }
 
     /* checkIfBool - checks if the input is a boolean */
