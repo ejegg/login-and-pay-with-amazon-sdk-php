@@ -41,6 +41,10 @@ abstract class BaseClient
 			    );
 
     protected $modePath = null;
+    // Number of microseconds to wait when initially throttled.  If throttled
+    // repeatedly, wait time will be multiplied by a power of four.
+    // Override this for services that require longer wait times.
+    protected $basePause = 100000;
 
     // Final URL to where the API parameters POST done, based off the config['region'] and respective $mwsServiceUrls
     protected $mwsServiceUrl = null;
@@ -546,7 +550,7 @@ abstract class BaseClient
     private function pauseOnRetry($retries, $status)
     {
         if ($retries <= self::MAX_ERROR_RETRY) {
-            $delay = (int) (pow(4, $retries) * 100000);
+            $delay = (int) (pow(4, $retries) * $this->basePause);
             usleep($delay);
         } else {
             throw new \Exception('Error Code: '. $status.PHP_EOL.'Maximum number of retry attempts - '. $retries .' reached');

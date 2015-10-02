@@ -12,6 +12,8 @@ class ReportsClient extends BaseClient implements ReportsClientInterface {
 	protected function setServiceVersion() {
 		$this->serviceVersion = '2009-01-01';
 	}
+    // When throttled, wait a full minute for quota to refill
+    protected $basePause = 60000000;
 
     /* GetReportList API call - Returns a list of reports that were created in the previous 90 days.
      * @see http://docs.developer.amazonservices.com/en_US/reports/Reports_GetReportList.html
