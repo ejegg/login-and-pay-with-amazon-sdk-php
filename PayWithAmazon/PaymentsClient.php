@@ -6,7 +6,9 @@ require_once 'PaymentsClientInterface.php';
 
 class PaymentsClient extends BaseClient implements PaymentsClientInterface{
 
-	private $profileEndpoint = null;
+    private $profileEndpoint = null;
+
+    protected $serviceVersion = '2013-01-01';
 
     /* GetUserInfo convenience function - Returns user's profile information from Amazon using the access token returned by the Button widget.
      *
@@ -1003,10 +1005,5 @@ class PaymentsClient extends BaseClient implements PaymentsClientInterface{
     protected function setModePath()
     {
         $this->modePath = strtolower($this->config['sandbox']) ? 'OffAmazonPayments_Sandbox' : 'OffAmazonPayments';
-    }
-
-    protected function setServiceVersion()
-    {
-        $this->serviceVersion = '2013-01-01';
     }
 }

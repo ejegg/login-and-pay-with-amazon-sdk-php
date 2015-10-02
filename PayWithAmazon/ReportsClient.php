@@ -5,15 +5,14 @@ require_once 'BaseClient.php';
 require_once 'ReportsClientInterface.php';
 
 class ReportsClient extends BaseClient implements ReportsClientInterface {
-	protected function setModePath() {
-		$this->modePath = 'Reports';
-	}
 
-	protected function setServiceVersion() {
-		$this->serviceVersion = '2009-01-01';
-	}
+    protected $serviceVersion = '2009-01-01';
     // When throttled, wait a full minute for quota to refill
     protected $basePause = 60000000;
+
+    protected function setModePath() {
+        $this->modePath = 'Reports';
+    }
 
     /* GetReportList API call - Returns a list of reports that were created in the previous 90 days.
      * @see http://docs.developer.amazonservices.com/en_US/reports/Reports_GetReportList.html
@@ -58,5 +57,5 @@ class ReportsClient extends BaseClient implements ReportsClientInterface {
 
         $responseObject = $this->setParametersAndPost($parameters, $fieldMappings, $requestParameters, false);
         return ($responseObject);
-    }    
+    }
 }

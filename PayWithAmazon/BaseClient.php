@@ -16,7 +16,9 @@ abstract class BaseClient
     const MWS_CLIENT_VERSION = '1.0.0';
     const MAX_ERROR_RETRY = 3;
 
-	protected $serviceVersion;
+    // Override in concrete classes with API's service version
+    protected $serviceVersion;
+
     // Construct User agent string based off of the application_name, application_version, PHP platform
     protected $userAgent = null;
     protected $parameters = null;
@@ -62,7 +64,6 @@ abstract class BaseClient
 
     public function __construct($config = null)
     {
-		$this->setServiceVersion();
 	$this->getRegionUrls();
         if (!is_null($config)) {
 
@@ -578,7 +579,6 @@ abstract class BaseClient
     }
 
 	abstract protected function setModePath();
-	abstract protected function setServiceVersion();
 
     /* Create the User Agent Header sent with the POST request */
 
