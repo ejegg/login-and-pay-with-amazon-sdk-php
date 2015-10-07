@@ -45,7 +45,12 @@ composer create-project amzn/login-and-pay-with-amazon-sdk-php --prefer-dist
 │   ├── ReportsClient.php - Class with the Reports API calls
 │   ├── ReportsClientInterface.php - Shows the public function definitions in ReportsClient.php
 │   ├── ResponseInterface.php - Shows the public function definitions in ResponseParser.php
-│   └── ResponseParser.php -  Parses the API call response
+│   ├── ResponseParser.php -  Parses the API call response
+│   └── Mocks
+│       ├── MockBaseClient.php - Abstract class with common functions for client mocks
+│       ├── MockPaymentsClient.php - Fake payments client that does no API calls
+│       ├── MockReportsClient.php - Fake reports client that does no API calls
+│       └── MockResponseParser.php - Mock implementation of ResponseInterface
 ├── README.md
 └── UnitTests
     ├── PaymentsClientTest.php
