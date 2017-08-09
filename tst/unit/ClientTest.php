@@ -8,24 +8,25 @@ require_once 'Signature.php';
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
     private $configParams = array(
-                'merchant_id'          => 'MERCHANT1234567',
-                'access_key'           => 'ABCDEFGHI1JKLMN2O7',
-                'secret_key'           => "abc123Def456gHi789jKLmpQ987rstu6vWxyz",
-                'currency_code'        => 'usd',
-                'client_id'            => 'amzn1.application-oa2-client.45789c45a8f34927830be1d9e029f480',
-                'region'               => 'us',
-                'sandbox'              => true,
-                'platform_id'          => 'test',
-                'application_name'     => 'sdk testing',
-                'application_version'  => '1.0',
-                'proxy_host'           => null,
-                'proxy_port'           => -1,
-                'proxy_username'       => null,
-                'proxy_Password'       => null
-            );
+        'merchant_id'         => 'MERCHANT1234567',
+        'access_key'          => 'ABCDEFGHI1JKLMN2O7',
+        'secret_key'          => "abc123Def456gHi789jKLmpQ987rstu6vWxyz",
+        'currency_code'       => 'usd',
+        'client_id'           => 'amzn1.application-oa2-client.45789c45a8f34927830be1d9e029f480',
+        'region'              => 'us',
+        'sandbox'             => true,
+        'platform_id'         => 'test',
+        'application_name'    => 'sdk testing',
+        'application_version' => '1.0',
+        'proxy_host'          => null,
+        'proxy_port'          => -1,
+        'proxy_username'      => null,
+        'proxy_Password'      => null
+    );
 
     public function testConfigArray()
     {
+
         // Test that trimmimg isn't converting the Boolean to a string
         $client = new Client($this->configParams);
         $this->assertTrue((bool)$client->__get('sandbox'));
@@ -35,7 +36,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse((bool)$client->__get('sandbox'));
 
         try {
-          $client = new Client(array('sandbox' => 'false'));
+            $client = new Client(array('sandbox' => 'false'));
         } catch (\Exception $expected) {
             $this->assertRegExp('/should be a boolean value/i', strval($expected));
         }
@@ -50,11 +51,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         }
 
         // Test that string trimming is working as intended
-        $client = new Client(array(
+        $client = new Client(
+            array(
             'region'        => 'us  ', // two spaces at end
             'currency_code' => '  usd', // two spaces at beginning
             'client_id'     => '  A113  ' // two spaces and beginning and end
-        ));
+            )
+        );
         $this->assertEquals('us', $client->__get('region'));
         $this->assertEquals('usd', $client->__get('currency_code'));
         $this->assertEquals('A113', $client->__get('client_id'));
@@ -398,7 +401,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $expectedParameters = $parameters['expectedParameters'];
         $apiCallParams = $parameters['apiCallParams'];
 
-        $expectedParameters['AuthorizationAmount.CurrencyCode'] = 'USD'; # default from client
+        $expectedParameters['AuthorizationAmount.CurrencyCode'] = 'USD'; // default from client
         $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->confirmOrderReference($apiCallParams);
@@ -686,7 +689,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $expectedStringParams = $this->callPrivateMethod($client, 'calculateSignatureAndParametersToString', $expectedParameters);
 
         $response = $client->getRefundDetails($apiCallParams);
-
         $apiParametersString = $client->getParameters();
 
         $this->assertEquals($apiParametersString, $expectedStringParams);
@@ -984,27 +986,27 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         $client = new Client($this->configParams);
 
-        $parameters['SellerId']         = $this->configParams['merchant_id'];
-        $parameters['AWSAccessKeyId']   = $this->configParams['access_key'];
-        $parameters['Version']          = 'test';
-        $parameters['SignatureMethod']  = 'HmacSHA256';
+        $parameters['SellerId'] = $this->configParams['merchant_id'];
+        $parameters['AWSAccessKeyId'] = $this->configParams['access_key'];
+        $parameters['Version'] = 'test';
+        $parameters['SignatureMethod'] = 'HmacSHA256';
         $parameters['SignatureVersion'] = 2;
-        $parameters['Timestamp']        = $this->getFormattedTimestamp();
+        $parameters['Timestamp'] = $this->getFormattedTimestamp();
         uksort($parameters, 'strcmp');
 
-        $signatureObj = new Signature($this->configParams,$parameters);
+        $signatureObj = new Signature($this->configParams, $parameters);
         $expectedSignature = $signatureObj->getSignature();
 
-        $this->callPrivateMethod($client,'createServiceUrl', null);
+        $this->callPrivateMethod($client, 'createServiceUrl', null);
 
-        $signature = $this->callPrivateMethod($client,'signParameters', $parameters);
+        $signature = $this->callPrivateMethod($client, 'signParameters', $parameters);
 
         $this->assertEquals($signature, $expectedSignature);
     }
 
     public function test500or503()
     {
-       try  {
+        try {
             $client = new Client($this->configParams);
 
             $url = 'https://www.amazon.com/OffAmazonPayments_Sandbox/2013-01-01';
@@ -1021,7 +1023,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         $response = array();
         $response['ResponseBody'] =
-        '<GetOrderReferenceDetailsResponse xmlns="http://mws.amazonservices.com/schema/OffAmazonPayments/2013-01-01">
+            '<GetOrderReferenceDetailsResponse xmlns="http://mws.amazonservices.com/schema/OffAmazonPayments/2013-01-01">
         <AmazonOrderReferenceId>S01-5806490-2147504</AmazonOrderReferenceId>
         <ExpirationTimestamp>2015-09-27T02:18:33.408Z</ExpirationTimestamp>
         <SellerNote>This is testing API call</SellerNote>
@@ -1037,14 +1039,14 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         $response = array('Status' => '200');
         $response['ResponseBody'] =
-        '<GetOrderReferenceDetailsResponse xmlns="http://mws.amazonservices.com/schema/OffAmazonPayments/2013-01-01">
+            '<GetOrderReferenceDetailsResponse xmlns="http://mws.amazonservices.com/schema/OffAmazonPayments/2013-01-01">
         <AmazonOrderReferenceId>S01-5806490-2147504</AmazonOrderReferenceId>
         <ExpirationTimestamp>2015-09-27T02:18:33.408Z</ExpirationTimestamp>
         <SellerNote>This is testing API call</SellerNote>
         </GetOrderReferenceDetailsResponse>';
 
         $json =
-        '{"AmazonOrderReferenceId":"S01-5806490-2147504","ExpirationTimestamp":"2015-09-27T02:18:33.408Z","SellerNote":"This is testing API call","ResponseStatus":"200"}';
+            '{"AmazonOrderReferenceId":"S01-5806490-2147504","ExpirationTimestamp":"2015-09-27T02:18:33.408Z","SellerNote":"This is testing API call","ResponseStatus":"200"}';
 
         $responseObj = new ResponseParser($response);
         $jsonResponse = $responseObj->toJson();
@@ -1056,16 +1058,18 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         $response = array('Status' => '200');
         $response['ResponseBody'] =
-        '<GetOrderReferenceDetailsResponse xmlns="http://mws.amazonservices.com/schema/OffAmazonPayments/2013-01-01">
+            '<GetOrderReferenceDetailsResponse xmlns="http://mws.amazonservices.com/schema/OffAmazonPayments/2013-01-01">
         <AmazonOrderReferenceId>S01-5806490-2147504</AmazonOrderReferenceId>
         <ExpirationTimestamp>2015-09-27T02:18:33.408Z</ExpirationTimestamp>
         <SellerNote>This is testing API call</SellerNote>
         </GetOrderReferenceDetailsResponse>';
 
-        $array = array('AmazonOrderReferenceId' => 'S01-5806490-2147504',
-                      'ExpirationTimestamp' => '2015-09-27T02:18:33.408Z',
-                      'SellerNote' => 'This is testing API call',
-                      'ResponseStatus' => '200');
+        $array = array(
+            'AmazonOrderReferenceId' => 'S01-5806490-2147504',
+            'ExpirationTimestamp'    => '2015-09-27T02:18:33.408Z',
+            'SellerNote'             => 'This is testing API call',
+            'ResponseStatus'         => '200'
+        );
 
         $responseObj = new ResponseParser($response);
         $arrayResponse = $responseObj->toArray();
@@ -1118,8 +1122,10 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             $apiCallParams['currency_code'] = 'TEST';
         }
 
-        return array('expectedParameters' => $expectedParameters,
-                     'apiCallParams'      => $apiCallParams);
+        return array(
+            'expectedParameters' => $expectedParameters,
+            'apiCallParams'      => $apiCallParams
+        );
     }
 
     /* Formats date as ISO 8601 timestamp */

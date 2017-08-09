@@ -160,10 +160,8 @@ class Client implements ClientInterface, LoggerAwareInterface
             if (array_key_exists($key, $this->config)) {
                 $this->config[$key] = $value;
             } else {
-                throw new \Exception(
-                    'Key ' . $key . ' is either not part of the configuration or has incorrect Key name.
-                check the config array key names to match your key names of your config array', 1
-                );
+                throw new \Exception('Key ' . $key . ' is either not part of the configuration or has incorrect Key name.
+                check the config array key names to match your key names of your config array', 1);
             }
         }
     }
@@ -178,20 +176,20 @@ class Client implements ClientInterface, LoggerAwareInterface
     private function getErrorMessageForJsonError($jsonError)
     {
         switch ($jsonError) {
-        case JSON_ERROR_DEPTH:
-            return " - maximum stack depth exceeded.";
+            case JSON_ERROR_DEPTH:
+                return " - maximum stack depth exceeded.";
                 break;
-        case JSON_ERROR_STATE_MISMATCH:
-            return " - invalid or malformed JSON.";
+            case JSON_ERROR_STATE_MISMATCH:
+                return " - invalid or malformed JSON.";
                 break;
-        case JSON_ERROR_CTRL_CHAR:
-            return " - control character error.";
+            case JSON_ERROR_CTRL_CHAR:
+                return " - control character error.";
                 break;
-        case JSON_ERROR_SYNTAX:
-            return " - syntax error.";
+            case JSON_ERROR_SYNTAX:
+                return " - syntax error.";
                 break;
-        default:
-            return ".";
+            default:
+                return ".";
                 break;
         }
     }
@@ -442,7 +440,11 @@ class Client implements ClientInterface, LoggerAwareInterface
         if (array_key_exists('currency_code', $fieldMappings)) {
             if (!empty($requestParameters['currency_code'])) {
                 $parameters[$fieldMappings['currency_code']] = strtoupper($requestParameters['currency_code']);
-            } else if (!(array_key_exists('Action', $parameters) && ($parameters['Action'] === 'SetOrderAttributes' || $parameters['Action'] === 'ConfirmOrderReference'))) {
+<<<<<<< HEAD
+            } else if (!(array_key_exists('Action', $parameters) && ( $parameters['Action'] === 'SetOrderAttributes' || $parameters['Action'] === 'ConfirmOrderReference'))) {
+=======
+            } elseif (!(array_key_exists('Action', $parameters) && $parameters['Action'] === 'SetOrderAttributes')) {
+>>>>>>> Make whitespace consistent
                 // Only supply a default CurrencyCode parameter if not using SetOrderAttributes API
                 $parameters[$fieldMappings['currency_code']] = strtoupper($this->config['currency_code']);
             }
@@ -541,6 +543,7 @@ class Client implements ClientInterface, LoggerAwareInterface
         return $parameters;
     }
 
+<<<<<<< HEAD
     /* GetMerchantAccountStatus API call - Returns the status of the Merchant Account.
      * @see TODO
 
@@ -562,6 +565,8 @@ class Client implements ClientInterface, LoggerAwareInterface
         return ($responseObject);
     }
 
+=======
+>>>>>>> Make whitespace consistent
     /* GetOrderReferenceDetails API call - Returns details about the Order Reference object and its current state.
      * @see https://pay.amazon.com/developer/documentation/apireference/201751970
      *
@@ -593,6 +598,8 @@ class Client implements ClientInterface, LoggerAwareInterface
         $responseObject = $this->setParametersAndPost($parameters, $fieldMappings, $requestParameters);
         return ($responseObject);
     }
+
+<<<<<<< HEAD
 
     /* ListOrderReference API call - Returns details about the Order Reference object and its current state from the sellers.
      * @see https://pay.amazon.com/developer/documentation/apireference/201751970
@@ -635,7 +642,7 @@ class Client implements ClientInterface, LoggerAwareInterface
             'payment_domain'     => 'PaymentDomain'
         );
 
-        if($requestParameters['order_status_list'] ) {
+        if( $requestParameters['order_status_list'] ){
             $status_index = 0;
             foreach ($requestParameters['order_status_list'] as $status) {
                 $status_index++;
@@ -666,7 +673,7 @@ class Client implements ClientInterface, LoggerAwareInterface
         $fieldMappings = array(
             'merchant_id'    => 'SellerId',
             'mws_auth_token' => 'MWSAuthToken',
-
+            
             'next_page_token' => 'NextPageToken'
         );
 
@@ -674,6 +681,9 @@ class Client implements ClientInterface, LoggerAwareInterface
         return ($responseObject);
     }
 
+
+=======
+>>>>>>> Make whitespace consistent
     /* SetOrderReferenceDetails API call - Sets order reference details such as the order total and a description for the order.
      * @see https://pay.amazon.com/developer/documentation/apireference/201751960
      *
@@ -784,16 +794,20 @@ class Client implements ClientInterface, LoggerAwareInterface
         $fieldMappings = array(
             'merchant_id'               => 'SellerId',
             'amazon_order_reference_id' => 'AmazonOrderReferenceId',
+<<<<<<< HEAD
             'success_url'               => 'SuccessUrl',
             'failure_url'               => 'FailureUrl',
             'authorization_amount'      => 'AuthorizationAmount.Amount',
             'currency_code'             => 'AuthorizationAmount.CurrencyCode',
+=======
+>>>>>>> Make whitespace consistent
             'mws_auth_token'            => 'MWSAuthToken'
         );
 
         if (isset($requestParameters['authorization_amount']) && !isset($requestParameters['currency_code'])) {
             $requestParameters['currency_code'] = strtoupper($this->config['currency_code']);
         }
+
         $responseObject = $this->setParametersAndPost($parameters, $fieldMappings, $requestParameters);
 
         return ($responseObject);
@@ -1382,22 +1396,22 @@ class Client implements ClientInterface, LoggerAwareInterface
 
         } elseif (!empty($requestParameters['amazon_reference_id'])) {
             switch (substr(strtoupper($requestParameters['amazon_reference_id']), 0, 1)) {
-            case 'P':
-            case 'S':
-                $chargeType = 'OrderReference';
-                $setParameters['amazon_order_reference_id'] = $requestParameters['amazon_reference_id'];
-                $authorizeParameters['amazon_order_reference_id'] = $requestParameters['amazon_reference_id'];
-                $confirmParameters['amazon_order_reference_id'] = $requestParameters['amazon_reference_id'];
-                break;
-            case 'B':
-            case 'C':
-                $chargeType = 'BillingAgreement';
-                $setParameters['amazon_billing_agreement_id'] = $requestParameters['amazon_reference_id'];
-                $authorizeParameters['amazon_billing_agreement_id'] = $requestParameters['amazon_reference_id'];
-                $confirmParameters['amazon_billing_agreement_id'] = $requestParameters['amazon_reference_id'];
-                break;
-            default:
-                throw new \Exception('Invalid Amazon Reference ID');
+                case 'P':
+                case 'S':
+                    $chargeType = 'OrderReference';
+                    $setParameters['amazon_order_reference_id'] = $requestParameters['amazon_reference_id'];
+                    $authorizeParameters['amazon_order_reference_id'] = $requestParameters['amazon_reference_id'];
+                    $confirmParameters['amazon_order_reference_id'] = $requestParameters['amazon_reference_id'];
+                    break;
+                case 'B':
+                case 'C':
+                    $chargeType = 'BillingAgreement';
+                    $setParameters['amazon_billing_agreement_id'] = $requestParameters['amazon_reference_id'];
+                    $authorizeParameters['amazon_billing_agreement_id'] = $requestParameters['amazon_reference_id'];
+                    $confirmParameters['amazon_billing_agreement_id'] = $requestParameters['amazon_reference_id'];
+                    break;
+                default:
+                    throw new \Exception('Invalid Amazon Reference ID');
             }
         } else {
             throw new \Exception('key amazon_order_reference_id or amazon_billing_agreement_id is null and is a required parameter');
@@ -1427,72 +1441,72 @@ class Client implements ClientInterface, LoggerAwareInterface
     {
         switch ($chargeType) {
 
-        case 'OrderReference':
+            case 'OrderReference':
 
-            // Get the Order Reference details and feed the response object to the ResponseParser
-            $responseObj = $this->getOrderReferenceDetails($setParameters);
+                // Get the Order Reference details and feed the response object to the ResponseParser
+                $responseObj = $this->getOrderReferenceDetails($setParameters);
 
-            // Call the function getOrderReferenceDetailsStatus in ResponseParser.php providing it the XML response
-            // $oroStatus is an array containing the State of the Order Reference ID
-            $oroStatus = $responseObj->getOrderReferenceDetailsStatus($responseObj->toXml());
+                // Call the function getOrderReferenceDetailsStatus in ResponseParser.php providing it the XML response
+                // $oroStatus is an array containing the State of the Order Reference ID
+                $oroStatus = $responseObj->getOrderReferenceDetailsStatus($responseObj->toXml());
 
-            if ($oroStatus['State'] === 'Draft') {
-                $response = $this->setOrderReferenceDetails($setParameters);
-                if ($this->success) {
-                    $this->confirmOrderReference($confirmParameters);
+                if ($oroStatus['State'] === 'Draft') {
+                    $response = $this->setOrderReferenceDetails($setParameters);
+                    if ($this->success) {
+                        $this->confirmOrderReference($confirmParameters);
+                    }
                 }
-            }
 
-            $responseObj = $this->getOrderReferenceDetails($setParameters);
+                $responseObj = $this->getOrderReferenceDetails($setParameters);
 
-            // Check the Order Reference Status again before making the Authorization.
-            $oroStatus = $responseObj->getOrderReferenceDetailsStatus($responseObj->toXml());
+                // Check the Order Reference Status again before making the Authorization.
+                $oroStatus = $responseObj->getOrderReferenceDetailsStatus($responseObj->toXml());
 
-            if ($oroStatus['State'] === 'Open') {
-                if ($this->success) {
-                    $response = $this->authorize($authorizeParameters);
+                if ($oroStatus['State'] === 'Open') {
+                    if ($this->success) {
+                        $response = $this->authorize($authorizeParameters);
+                    }
                 }
-            }
 
-            if ($oroStatus['State'] != 'Open' && $oroStatus['State'] != 'Draft') {
-                throw new \Exception('The Order Reference is in the ' . $oroStatus['State'] . " State. It should be in the Draft or Open State");
-            }
-
-            return $response;
-
-        case 'BillingAgreement':
-
-            // Get the Billing Agreement details and feed the response object to the ResponseParser
-
-            $responseObj = $this->getBillingAgreementDetails($setParameters);
-
-            // Call the function getBillingAgreementDetailsStatus in ResponseParser.php providing it the XML response
-            // $baStatus is an array containing the State of the Billing Agreement
-            $baStatus = $responseObj->getBillingAgreementDetailsStatus($responseObj->toXml());
-
-            if ($baStatus['State'] === 'Draft') {
-                $response = $this->setBillingAgreementDetails($setParameters);
-                if ($this->success) {
-                    $response = $this->confirmBillingAgreement($confirmParameters);
+                if ($oroStatus['State'] != 'Open' && $oroStatus['State'] != 'Draft') {
+                    throw new \Exception('The Order Reference is in the ' . $oroStatus['State'] . " State. It should be in the Draft or Open State");
                 }
-            }
 
-            // Check the Billing Agreement status again before making the Authorization.
-            $responseObj = $this->getBillingAgreementDetails($setParameters);
-            $baStatus = $responseObj->getBillingAgreementDetailsStatus($responseObj->toXml());
+                return $response;
 
-            if ($this->success && $baStatus['State'] === 'Open') {
-                $response = $this->authorizeOnBillingAgreement($authorizeParameters);
-            }
+            case 'BillingAgreement':
 
-            if ($baStatus['State'] != 'Open' && $baStatus['State'] != 'Draft') {
-                throw new \Exception('The Billing Agreement is in the ' . $baStatus['State'] . " State. It should be in the Draft or Open State");
-            }
+                // Get the Billing Agreement details and feed the response object to the ResponseParser
 
-            return $response;
+                $responseObj = $this->getBillingAgreementDetails($setParameters);
 
-        default:
-            throw new \Exception('Invalid Charge Type');
+                // Call the function getBillingAgreementDetailsStatus in ResponseParser.php providing it the XML response
+                // $baStatus is an array containing the State of the Billing Agreement
+                $baStatus = $responseObj->getBillingAgreementDetailsStatus($responseObj->toXml());
+
+                if ($baStatus['State'] === 'Draft') {
+                    $response = $this->setBillingAgreementDetails($setParameters);
+                    if ($this->success) {
+                        $response = $this->confirmBillingAgreement($confirmParameters);
+                    }
+                }
+
+                // Check the Billing Agreement status again before making the Authorization.
+                $responseObj = $this->getBillingAgreementDetails($setParameters);
+                $baStatus = $responseObj->getBillingAgreementDetailsStatus($responseObj->toXml());
+
+                if ($this->success && $baStatus['State'] === 'Open') {
+                    $response = $this->authorizeOnBillingAgreement($authorizeParameters);
+                }
+
+                if ($baStatus['State'] != 'Open' && $baStatus['State'] != 'Draft') {
+                    throw new \Exception('The Billing Agreement is in the ' . $baStatus['State'] . " State. It should be in the Draft or Open State");
+                }
+
+                return $response;
+
+            default:
+                throw new \Exception('Invalid Charge Type');
         }
     }
 
