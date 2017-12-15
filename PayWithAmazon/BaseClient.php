@@ -1,5 +1,7 @@
 <?php
 namespace PayWithAmazon;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /* Class BaseClient
  * Takes configuration information
@@ -18,6 +20,11 @@ abstract class BaseClient
 
     // Override in concrete classes with API's service version
     protected $serviceVersion;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     // Construct User agent string based off of the application_name, application_version, PHP platform
     protected $userAgent = null;
@@ -39,7 +46,8 @@ abstract class BaseClient
 			    'proxy_username' 	   => null,
 			    'proxy_password' 	   => null,
 			    'client_id' 	   => null,
-			    'handle_throttle' 	   => true
+			    'handle_throttle' 	   => true,
+                'logger'            => null
 			    );
 
     protected $modePath = null;
@@ -81,6 +89,17 @@ abstract class BaseClient
                 $this->checkConfigKeys($configArray);
             } else {
                 throw new \Exception('$config is of the incorrect type ' . gettype($configArray) . ' and should be of the type array');
+            }
+            if (empty($configArray['logger'])) {
+                $this->logger = new NullLogger();
+            } else {
+                if ($configArray['logger'] instanceof LoggerInterface) {
+                    $this->logger = $configArray['logger'];
+                } else {
+                    throw new \InvalidArgumentException(
+                        'Logger passed in config must implement Psr\Log\LoggerInterface'
+                    );
+                }
             }
         } else {
 	    throw new \Exception('$config cannot be null.');
