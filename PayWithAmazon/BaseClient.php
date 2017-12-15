@@ -579,6 +579,7 @@ abstract class BaseClient
                             $this->pauseOnRetry(++$retries, $statusCode);
                         }
                     } else {
+                        $this->logger->info("Returned status code $statusCode, not retrying.");
                         $shouldRetry = false;
                     }
                 } catch (\Exception $e) {
@@ -601,6 +602,7 @@ abstract class BaseClient
     {
         if ($retries <= self::MAX_ERROR_RETRY) {
             $delay = (int) (pow(4, $retries) * $this->basePause);
+            $this->logger->info("Returned status code $status on try $retries, waiting $delay microseconds.");
             usleep($delay);
         } else {
             throw new \Exception('Error Code: '. $status.PHP_EOL.'Maximum number of retry attempts - '. $retries .' reached');
