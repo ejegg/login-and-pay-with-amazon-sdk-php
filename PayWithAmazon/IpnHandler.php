@@ -5,9 +5,10 @@ namespace PayWithAmazon;
  * Takes headers and body of the IPN message as input in the constructor
  * verifies that the IPN is from the right resource and has the valid data
  */
-
+require_once 'ArrayUtil.php';
 require_once 'HttpCurl.php';
 require_once 'IpnHandlerInterface.php';
+
 class IpnHandler implements IpnHandlerInterface
 {
 
@@ -61,7 +62,7 @@ class IpnHandler implements IpnHandlerInterface
     private function checkConfigKeys($ipnConfig)
     {
         $ipnConfig = array_change_key_case($ipnConfig, CASE_LOWER);
-	$ipnConfig = $this->trimArray($ipnConfig);
+	$ipnConfig = ArrayUtil::trimArray($ipnConfig);
 
         foreach ($ipnConfig as $key => $value) {
             if (array_key_exists($key, $this->ipnConfig)) {
@@ -97,17 +98,6 @@ class IpnHandler implements IpnHandlerInterface
         } else {
             throw new \Exception("Key " . $name . " was not found in the configuration", 1);
         }
-    }
-
-    /* Trim the input Array key values */
-    
-    private function trimArray($array)
-    {
-	foreach ($array as $key => $value)
-	{
-	    $array[$key] = trim($value);
-	}
-	return $array;
     }
     
     private function validateHeaders()

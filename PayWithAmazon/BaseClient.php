@@ -9,6 +9,7 @@ use Psr\Log\NullLogger;
  * returns Response Object
  */
 
+require_once 'ArrayUtil.php';
 require_once 'ResponseParser.php';
 require_once 'HttpCurl.php';
 require_once 'Regions.php';
@@ -146,7 +147,7 @@ abstract class BaseClient
     private function checkConfigKeys($config)
     {
         $config = array_change_key_case($config, CASE_LOWER);
-	$config = $this->trimArray($config);
+	$config = ArrayUtil::trimArray($config);
 
         foreach ($config as $key => $value) {
             if (array_key_exists($key, $this->config)) {
@@ -264,20 +265,6 @@ abstract class BaseClient
     public function getParameters()
     {
 	return trim($this->parameters);
-    }
-    
-    /* Trim the input Array key values */
-    
-    protected function trimArray($array)
-    {
-	foreach ($array as $key => $value)
-	{
-	    if(!is_array($value) && $key!=='proxy_password')
-	    {
-		$array[$key] = trim($value);
-	    }
-	}
-	return $array;
     }
 
     /* setParametersAndPost - sets the parameters array with non empty values from the requestParameters array sent to API calls.
