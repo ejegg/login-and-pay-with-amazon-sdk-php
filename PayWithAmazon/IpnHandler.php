@@ -21,6 +21,7 @@ class IpnHandler implements IpnHandlerInterface
     private $expectedCnName = 'sns.amazonaws.com';
 
     private $ipnConfig = array('cabundle_file'  => null,
+                               'proxy_tcp' 	=> null,
 			       'proxy_host' 	=> null,
                                'proxy_port' 	=> -1,
                                'proxy_username' => null,
