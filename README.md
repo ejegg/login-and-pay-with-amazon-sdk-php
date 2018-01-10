@@ -78,6 +78,7 @@ composer create-project amzn/login-and-pay-with-amazon-sdk-php --prefer-dist
 | CA Bundle File      | `cabundle_file`       | Default : `null`			    	   |
 | Application Name    | `application_name`    | Default : `null`			    	   |
 | Application Version | `application_version` | Default : `null`			    	   |
+| Proxy TCP           | `proxy_tcp`           | Default : `null`			    	   |
 | Proxy Host          | `proxy_host`          | Default : `null`			    	   |
 | Proxy Port          | `proxy_port`          | Default : `-1`  			    	   |
 | Proxy Username      | `proxy_username`      | Default : `null`			    	   |

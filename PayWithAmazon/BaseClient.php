@@ -42,6 +42,7 @@ abstract class BaseClient
 			    'cabundle_file' 	   => null,
 			    'application_name'     => null,
 			    'application_version'  => null,
+                'proxy_tcp' 	   => null,
 			    'proxy_host' 	   => null,
 			    'proxy_port' 	   => -1,
 			    'proxy_username' 	   => null,
@@ -234,6 +235,10 @@ abstract class BaseClient
 
         if (!empty($proxy['proxy_user_password']))
             $this->config['proxy_password'] = $proxy['proxy_user_password'];
+
+        if (!empty($proxy['proxy_tcp'])) {
+            $this->config['proxy_tcp'] = $proxy['proxy_tcp'];
+        }
     }
 
     /* Setter for $mwsServiceUrl
