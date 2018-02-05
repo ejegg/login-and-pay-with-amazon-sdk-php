@@ -71,9 +71,9 @@ class HttpCurl implements HttpCurlInterface
             curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
 
         if ($this->config['proxy_tcp'] != null) {
-            // Support TCP proxy. Set the Host header to the real host we
-            // want to talk to, but make the request to the IP address
-            // specified in proxy_tcp.
+            // Support TCP proxy. Use CURLOPT_RESOLVE to make sure we
+            // use the IP address set in proxy_tcp rather than what
+            // would otherwise come back from DNS.
             $urlParts = parse_url($url);
             $hostName = $urlParts['host'];
             $resolve = "$hostName:443:{$this->config['proxy_tcp']}";
