@@ -148,7 +148,7 @@ abstract class BaseClient
     private function checkConfigKeys($config)
     {
         $config = array_change_key_case($config, CASE_LOWER);
-	$config = ArrayUtil::trimArray($config);
+	    $config = ArrayUtil::trimArray($config);
 
         foreach ($config as $key => $value) {
             if (array_key_exists($key, $this->config)) {

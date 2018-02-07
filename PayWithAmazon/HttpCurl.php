@@ -74,10 +74,21 @@ class HttpCurl implements HttpCurlInterface
             // Support TCP proxy. Use CURLOPT_RESOLVE to make sure we
             // use the IP address set in proxy_tcp rather than what
             // would otherwise come back from DNS.
-            $urlParts = parse_url($url);
-            $hostName = $urlParts['host'];
-            $resolve = "$hostName:443:{$this->config['proxy_tcp']}";
-            curl_setopt($ch, CURLOPT_RESOLVE, array($resolve));
+            $resolve = array();
+            if (is_array($this->config['proxy_tcp'])) {
+                // Only proxy traffic for specified hosts
+                foreach ($this->config['proxy_tcp'] as $proxyHost => $proxyIp) {
+                    $resolve[] = "$proxyHost:443:$proxyIp";
+                }
+            } else {
+                // Proxy whatever host we're trying to send to
+                $urlParts = parse_url($url);
+                $hostName = $urlParts['host'];
+                $resolve[] = "$hostName:443:{$this->config['proxy_tcp']}";
+            }
+            if (!empty($resolve)) {
+                curl_setopt($ch, CURLOPT_RESOLVE, $resolve);
+            }
         }
         elseif ($this->config['proxy_host'] != null && $this->config['proxy_port'] != -1) {
             curl_setopt($ch, CURLOPT_PROXY, $this->config['proxy_host'] . ':' . $this->config['proxy_port']);
