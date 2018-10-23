@@ -142,7 +142,7 @@ class HttpCurl implements HttpCurlInterface
     {
         $debugLog = fopen('php://temp', 'r+');
         curl_setopt($ch, CURLOPT_VERBOSE, true);
-        curl_setopt($ch, CURL_STDERR, $debugLog);
+        curl_setopt($ch, CURLOPT_STDERR, $debugLog);
         $response = curl_exec($ch);
         // Always read the verbose output
         rewind($debugLog);
